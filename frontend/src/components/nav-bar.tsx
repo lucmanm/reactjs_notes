@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import SearchBar from "./search-bar";
 import { Button } from "./ui/button";
 import {
@@ -13,7 +14,9 @@ import { getInitials } from "@/lib/helper";
 export default function NavBar() {
   return (
     <section className="bg-white flex items-center justify-between px-6 py-2 drop-shadow">
-      <h2 className="text-xl font-medium text-black py-2">Note App</h2>
+      <Link to="/">
+      <h2 className="text-xl font-bold py-2 text-lime-500">Note App</h2>
+      </Link>
       <SearchBar/>
       <div> 
         <DropdownMenu>
