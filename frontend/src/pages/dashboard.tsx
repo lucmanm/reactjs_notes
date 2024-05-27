@@ -31,23 +31,36 @@ function Dashboard() {
         className="fixed bg-gradient-to-r from-lime-400 to-lime-500 hover:bg-lime-500 border-lime-900 rounded-full p-0 shadow-md 
         w-12 h-12 flex items-center justify-center bottom-10 right-10"
         onClick={() => {
-          setOnMondal({ isOpen: true, type: "create", data: null });
+          setOnMondal(prev => ({ ...prev, isOpen: true  }));
         }}
       >
         <Plus className="size-6" />
       </Button>
       <Modal
         isOpen={onMondal.isOpen}
-        onRequestClose={() => {}}
+        onRequestClose={() => {
+          setOnMondal((prev) => ({
+            ...prev,
+            isOpen: false,
+          }));
+        }}
         style={{
           overlay: {
             backgroundColor: "rgba(0,0,0,0.2)",
           },
         }}
         contentLabel=""
-        className="w-1/4 bg-white rounded-md max-auto mt-14 flex items-center justify-center p-4 container"
+        className="relative w-1/4 bg-white rounded-md max-auto mt-14 flex items-center justify-center p-4 container"
       >
-        <CreateEditNote />
+        <CreateEditNote
+          onClose={() => {
+            setOnMondal({
+              isOpen: false,
+              type: "create",
+              data: null,
+            });
+          }}
+        />
       </Modal>
     </section>
   );
