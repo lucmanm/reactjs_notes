@@ -19,6 +19,21 @@ function Dashboard() {
     type: "create",
     data: null,
   });
+
+  const onOpen = () => {
+    setOnMondal((prev) => ({
+      ...prev,
+      isOpen: true,
+    }));
+  };
+
+  const onClose = () => {
+    setOnMondal((prev) => ({
+      ...prev,
+      isOpen: false,
+    }));
+  };
+
   return (
     <section className=" flex-1">
       <div className="container grid grid-cols-1 gap-4 md:grid-cols-3 py-4 ">
@@ -26,24 +41,17 @@ function Dashboard() {
           <NoteCard key={idx} data={data} />
         ))}
       </div>
+
       <Button
         variant="ghost"
-        className="fixed bg-gradient-to-r from-lime-400 to-lime-500 hover:bg-lime-500 border-lime-900 rounded-full p-0 shadow-md 
-        w-12 h-12 flex items-center justify-center bottom-10 right-10"
-        onClick={() => {
-          setOnMondal(prev => ({ ...prev, isOpen: true  }));
-        }}
+        className="fixed bg-teal-800 hover:bg-teal-300  border-teal-500 rounded-full p-0 shadow-lg w-12 h-12 flex items-center justify-center bottom-10 right-10"
+        onClick={onOpen}
       >
         <Plus className="size-6" />
       </Button>
       <Modal
         isOpen={onMondal.isOpen}
-        onRequestClose={() => {
-          setOnMondal((prev) => ({
-            ...prev,
-            isOpen: false,
-          }));
-        }}
+        onRequestClose={onClose}
         style={{
           overlay: {
             backgroundColor: "rgba(0,0,0,0.2)",
@@ -52,15 +60,7 @@ function Dashboard() {
         contentLabel=""
         className="relative w-1/4 bg-white rounded-md max-auto mt-14 flex items-center justify-center p-4 container"
       >
-        <CreateEditNote
-          onClose={() => {
-            setOnMondal({
-              isOpen: false,
-              type: "create",
-              data: null,
-            });
-          }}
-        />
+        <CreateEditNote onClose={onClose} />
       </Modal>
     </section>
   );
