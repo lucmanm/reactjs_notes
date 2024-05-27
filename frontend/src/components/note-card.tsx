@@ -24,8 +24,8 @@ export default function NoteCard({ data }: { data: TNoteCard }) {
         <div className="flex items-center justify-between py-2">
           <span className="text-xs text-gray-400">{data.tags}</span>
           <div className="flex gap-4 *:h-4 *:w-4 ">
-            <Trash className="hover:text-lime-500" />
-            <Edit className="hover:text-lime-500"/>
+            <Trash className="hover:text-teal-500" />
+            <Edit className="hover:text-teal-500"/>
           </div>
         </div>
       </CardContent>

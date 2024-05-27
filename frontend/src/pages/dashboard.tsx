@@ -20,16 +20,16 @@ function Dashboard() {
     data: null,
   });
   return (
-    <section className="pt-4 border-2 flex-1">
-      <div className="container grid grid-cols-1 gap-4 md:grid-cols-3 ">
+    <section className=" flex-1">
+      <div className="container grid grid-cols-1 gap-4 md:grid-cols-3 py-4 ">
         {Array.from({ length: 20 }).map((_, idx) => (
           <NoteCard key={idx} data={data} />
         ))}
       </div>
       <Button
         variant="ghost"
-        className="sticky bg-gradient-to-r from-lime-400 to-lime-500 hover:bg-lime-500 border-lime-900 rounded-full p-0 shadow-md 
-        w-12 h-12 flex items-center justify-center bottom-10 left-10"
+        className="fixed bg-gradient-to-r from-lime-400 to-lime-500 hover:bg-lime-500 border-lime-900 rounded-full p-0 shadow-md 
+        w-12 h-12 flex items-center justify-center bottom-10 right-10"
         onClick={() => {
           setOnMondal({ isOpen: true, type: "create", data: null });
         }}
