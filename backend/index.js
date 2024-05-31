@@ -104,8 +104,6 @@ app.post("/create-note", authenticationToken, async (req, res) => {
   const { title, content, tags } = req.body;
   const { user } = req.user;
 
-  console.log(title);
-
   if (!title || !content) {
     return res.status(400).json({ error: true, messae: "Field is required" });
   }
