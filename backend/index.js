@@ -102,6 +102,19 @@ app.post("/login", async (req, res) => {
   }
 });
 
+// get user
+app.get("/get-user", authenticationToken, async (req, res) => {
+  const { user } = req.user;
+  const isUser = await User.findOne({ _id: user._id });
+  if (!isUser) {
+    return res.status(401);
+  }
+  return res.json({
+    user: isUser,
+    message: ""
+  });
+});
+
 // Creating note
 app.post("/create-note", authenticationToken, async (req, res) => {
   const { title, content, tags } = req.body;
@@ -213,7 +226,9 @@ app.delete("/delete-note/:noteId", authenticationToken, async (req, res) => {
     return res.status(405).json({ error: true, messae: "Method not allowed" });
   }
 });
+// Pin Note
 
+app.put("/pinned-note", authenticationToken, async (req, res) => {});
 app.listen(8000);
 
 module.exports = app;
