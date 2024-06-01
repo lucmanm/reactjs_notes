@@ -28,6 +28,8 @@ app.get("/", (req, res) => {
   res.json({ data: process.env.ACCESS_TOKEN_SECRET });
 });
 
+// Create account
+
 app.post("/create-account", async (req, res) => {
   const { fullName, email, password } = req.body;
 
@@ -64,6 +66,8 @@ app.post("/create-account", async (req, res) => {
   });
 });
 
+// Account Login
+
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
@@ -98,6 +102,7 @@ app.post("/login", async (req, res) => {
   }
 });
 
+// Creating note
 app.post("/create-note", authenticationToken, async (req, res) => {
   const { title, content, tags } = req.body;
   const { user } = req.user;
@@ -128,7 +133,28 @@ app.post("/create-note", authenticationToken, async (req, res) => {
     });
   }
 });
-app.post("/edit-note/:noteId", authenticationToken, async (req, res) => {
+
+// Get all notes
+app.get("/notes", authenticationToken, async (req, res) => {
+  const { user } = req.user;
+
+  try {
+    const notes = await Note.find({
+      userId: user._id,
+    }).sort({ isPinned: -1 });
+
+    return res.json({
+      error: false,
+      notes,
+      message: "all note retrieved successfully",
+    });
+  } catch (error) {
+    return res.status("404").json({ error: true, messae: "Data not found" });
+  }
+});
+
+// Update Notes
+app.put("/edit-note/:noteId", authenticationToken, async (req, res) => {
   const noteId = req.params.noteId;
   const { title, content, tags, isPinned } = req.body;
   const { user } = req.user;
@@ -161,6 +187,33 @@ app.post("/edit-note/:noteId", authenticationToken, async (req, res) => {
     return res.status(405).json({ error: true, messae: "Method not allowed" });
   }
 });
+
+// Delete Note
+app.delete("/delete-note/:noteId", authenticationToken, async (req, res) => {
+  const noteId = req.params.noteId;
+  const { user } = req.user;
+
+  try {
+    const note = await Note.findOne({
+      _id: noteId,
+      userId: user._id,
+    });
+
+    if (!note) {
+      return res.status(404).json({ error: true, message: "Record not found!" });
+    }
+
+    await Note.deleteOne({ _id: noteId, userId: user._id });
+
+    return res.status(200).json({
+      error: false,
+      messae: "Deleted successfully",
+    });
+  } catch (error) {
+    return res.status(405).json({ error: true, messae: "Method not allowed" });
+  }
+});
+
 app.listen(8000);
 
 module.exports = app;
