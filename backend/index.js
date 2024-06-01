@@ -5,7 +5,6 @@ const mongoose = require("mongoose");
 
 mongoose.connect(config.connectionString);
 
-
 const express = require("express");
 const cors = require("cors");
 const app = express();
@@ -26,7 +25,7 @@ app.use(
 );
 
 app.get("/", (req, res) => {
-  res.json({ data: process.env.ACCESS_TOKEN_SECRET});
+  res.json({ data: process.env.ACCESS_TOKEN_SECRET });
 });
 
 app.post("/create-account", async (req, res) => {
@@ -79,7 +78,6 @@ app.post("/login", async (req, res) => {
   }
 
   if (userInfo.email == email && userInfo.password == password) {
-
     const user = { user: userInfo };
 
     const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
@@ -130,7 +128,39 @@ app.post("/create-note", authenticationToken, async (req, res) => {
     });
   }
 });
+app.post("/edit-note/:noteId", authenticationToken, async (req, res) => {
+  const noteId = req.params.noteId;
+  const { title, content, tags, isPinned } = req.body;
+  const { user } = req.user;
 
+  if (!title && !content && !tags) {
+    return res.status(400).json({ error: true, message: "No Changes provided" });
+  }
+
+  try {
+    const note = await Note.findOne({
+      _id: noteId,
+      userId: user._id,
+    });
+
+    if (!note) {
+      return res.status(404).json({ error: true, message: "Record not found!" });
+    }
+
+    if (title) note.title = title;
+    if (content) note.content = content;
+    if (tags) note.tags = tags;
+    if (isPinned) note.isPinned = isPinned;
+    await note.save();
+    return res.status(200).json({
+      error: false,
+      note,
+      messae: "Uppdated successfully",
+    });
+  } catch (error) {
+    return res.status(405).json({ error: true, messae: "Method not allowed" });
+  }
+});
 app.listen(8000);
 
 module.exports = app;
