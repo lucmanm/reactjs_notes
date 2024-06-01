@@ -111,7 +111,7 @@ app.get("/get-user", authenticationToken, async (req, res) => {
   }
   return res.json({
     user: isUser,
-    message: ""
+    message: "",
   });
 });
 
