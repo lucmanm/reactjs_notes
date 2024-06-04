@@ -12,23 +12,24 @@ const RootLayout = () => {
     setUser(null);
   };
   // get User info
-  const getuser = async () => {
-    try {
-      const response = await axiosInstance.get("/get-user");
-
-      if (response.data && response.data.user) {
-        setUser(response.data.user);
-      }
-    } catch (error) {
-      if (error.response.status === 401) {
-        localStorage.clear();
-        navigate("/login");
-      }
-    }
-  };
 
   useEffect(() => {
+    const getuser = async () => {
+      try {
+        const response = await axiosInstance.get("/get-user");
+
+        if (response.data && response.data.user) {
+          setUser(response.data.user);
+        }
+      } catch (error) {
+        if (error.response.status === 401) {
+          localStorage.clear();
+          navigate("/login");
+        }
+      }
+    };
     getuser();
+    
   }, []);
 
   return (

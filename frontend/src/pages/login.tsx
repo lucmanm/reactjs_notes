@@ -4,24 +4,24 @@ import { Label } from "@/components/ui/label";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { z } from "zod";
-import { loginSchama } from "@/validation/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axiosInstance from "@/lib/axios-instance";
+import { loginSchema } from "@/lib/type";
 
 export function Login() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<z.infer<typeof loginSchama>>({
-    resolver: zodResolver(loginSchama),
+  } = useForm<z.infer<typeof loginSchema>>({
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   });
-  const onSubmit: SubmitHandler<z.infer<typeof loginSchama>> = async (data) => {
+  const onSubmit: SubmitHandler<z.infer<typeof loginSchema>> = async (data) => {
     try {
       const response = await axiosInstance.post("/login", {
         email: data.email,

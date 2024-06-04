@@ -2,8 +2,11 @@ import NoteCard from "@/components/note-card";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import Modal from "react-modal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CreateEditNote from "@/components/create-edit-note";
+import axiosInstance from "@/lib/axios-instance";
+import { TNote } from "@/lib/type";
+import { Card } from "@/components/ui/card";
 const data = {
   title: "Note App",
   date: "6th April 2024",
@@ -14,6 +17,7 @@ const data = {
   isPinned: false,
 };
 function Dashboard() {
+  const [notes, setNotes] = useState<TNote[]>([]);
   const [onMondal, setOnMondal] = useState({
     isOpen: false,
     type: "create",
@@ -34,12 +38,35 @@ function Dashboard() {
     }));
   };
 
+  const getAllNotes = async () => {
+    try {
+      const response = await axiosInstance.get("/notes");
+
+      if (response.data && response.data.notes) {
+        setNotes(response.data.notes);
+      }
+    } catch (error) {
+      console.log("====================================");
+      console.log("ERROR_GET_LIST_NOTES", error);
+      console.log("====================================");
+    }
+  };
+  
+  useEffect(() => {
+    getAllNotes()
+  },[])
+
   return (
     <section className=" flex-1">
       <div className="container grid grid-cols-1 gap-4 md:grid-cols-3 py-4 ">
-        {Array.from({ length: 20 }).map((_, idx) => (
+        {notes.length > 0 ? (
+          notes.map((data, index) => <NoteCard key={index} data={data} />)
+        ) : (
+          <Card className="col-span-3 text-center p-4">No Notes Availble</Card>
+        )}
+        {/* {Array.from({ length: 20 }).map((_, idx) => (
           <NoteCard key={idx} data={data} />
-        ))}
+        ))} */}
       </div>
 
       <Button
