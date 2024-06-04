@@ -15,7 +15,13 @@ import { useNavigate } from "react-router-dom";
 //   onPinNote?: () => void;
 // };
 
-export default function NoteCard({ data, getAllNotes }: { data: TNote; getAllNotes: () => void }) {
+type TNoteProps = {
+  data: TNote;
+  getAllNotes: () => void;
+  onEdit: () => void;
+};
+
+export default function NoteCard({ data, getAllNotes, onEdit }: TNoteProps) {
   const navigate = useNavigate();
   const onDelete = async (id: string) => {
     try {
@@ -30,6 +36,7 @@ export default function NoteCard({ data, getAllNotes }: { data: TNote; getAllNot
       console.log("====================================");
     }
   };
+
   return (
     <Card className="hover:shadow-md hover:cursor-pointer lg:pr-2 ">
       <CardContent className="relative top-3">
@@ -50,7 +57,7 @@ export default function NoteCard({ data, getAllNotes }: { data: TNote; getAllNot
           </div>
           <div className="flex gap-4 *:h-4 *:w-4 ">
             <Trash className="hover:text-teal-500" onClick={() => onDelete(data._id)} />
-            <Edit className="hover:text-teal-500" />
+            <Edit className="hover:text-teal-500" onClick={() => onEdit()} />
           </div>
         </div>
       </CardContent>

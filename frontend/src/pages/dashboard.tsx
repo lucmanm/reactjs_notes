@@ -7,6 +7,7 @@ import axiosInstance from "@/lib/axios-instance";
 import { TNote } from "@/lib/type";
 import { Card } from "@/components/ui/card";
 import NoteFrom from "@/components/note-form";
+import { string } from "zod";
 const data = {
   title: "Note App",
   date: "6th April 2024",
@@ -52,6 +53,10 @@ function Dashboard() {
     }
   };
 
+  const handlEdit = async (id: string) => {
+    onOpen();
+  };
+
   useEffect(() => {
     getAllNotes();
   }, []);
@@ -60,15 +65,19 @@ function Dashboard() {
     <section className=" flex-1">
       <div className="container grid grid-cols-1 gap-4 md:grid-cols-3 py-4 ">
         {notes.length > 0 ? (
-          notes.map((data, index) => <NoteCard key={index} data={data} getAllNotes={getAllNotes} />)
+          notes.map((data, index) => (
+            <NoteCard
+              key={index}
+              data={data}
+              getAllNotes={getAllNotes}
+              onEdit={() => handlEdit(data._id)}
+            />
+          ))
         ) : (
           <Card className="col-span-3 text-center p-4">No Notes Availble</Card>
         )}
-        {/* {Array.from({ length: 20 }).map((_, idx) => (
-          <NoteCard key={idx} data={data} />
-        ))} */}
       </div>
-
+      {/* create Note Button */}
       <Button
         variant="ghost"
         className="fixed bg-teal-800 hover:bg-teal-300  border-teal-500 rounded-full p-0 shadow-lg w-12 h-12 flex items-center justify-center bottom-10 right-10"
