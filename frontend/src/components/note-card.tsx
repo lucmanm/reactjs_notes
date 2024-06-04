@@ -2,6 +2,8 @@ import { Edit, Pin, Trash } from "lucide-react";
 import { Card, CardContent } from "./ui/card";
 import { TNote } from "@/lib/type";
 import moment from "moment";
+import axiosInstance from "@/lib/axios-instance";
+import { useNavigate } from "react-router-dom";
 // type TNoteCard = {
 //   title: string;
 //   date: string;
@@ -13,7 +15,21 @@ import moment from "moment";
 //   onPinNote?: () => void;
 // };
 
-export default function NoteCard({ data }: { data: TNote }) {
+export default function NoteCard({ data, getAllNotes }: { data: TNote; getAllNotes: () => void }) {
+  const navigate = useNavigate();
+  const onDelete = async (id: string) => {
+    try {
+      const response = await axiosInstance.delete(`/delete-note/${id}`);
+      if (response) {
+        getAllNotes();
+        navigate("/");
+      }
+    } catch (error) {
+      console.log("====================================");
+      console.log("ERROR_DELETE_NOTE", error);
+      console.log("====================================");
+    }
+  };
   return (
     <Card className="hover:shadow-md hover:cursor-pointer lg:pr-2 ">
       <CardContent className="relative top-3">
@@ -33,7 +49,7 @@ export default function NoteCard({ data }: { data: TNote }) {
             ))}
           </div>
           <div className="flex gap-4 *:h-4 *:w-4 ">
-            <Trash className="hover:text-teal-500" />
+            <Trash className="hover:text-teal-500" onClick={() => onDelete(data._id)} />
             <Edit className="hover:text-teal-500" />
           </div>
         </div>

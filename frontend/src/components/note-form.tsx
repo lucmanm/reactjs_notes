@@ -23,8 +23,7 @@ type TCreateEditNote = {
   getAllNotes: () => void;
 };
 
-const CreateEditNote: React.FC<TCreateEditNote> = ({ onClose, getAllNotes }) => {
-  
+const NoteFrom: React.FC<TCreateEditNote> = ({ onClose, getAllNotes }) => {
   const [tags, setTags] = useState([""]);
 
   const {
@@ -97,4 +96,4 @@ const CreateEditNote: React.FC<TCreateEditNote> = ({ onClose, getAllNotes }) => 
   );
 };
 
-export default CreateEditNote;
+export default NoteFrom;

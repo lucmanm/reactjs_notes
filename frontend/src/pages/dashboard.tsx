@@ -3,10 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import Modal from "react-modal";
 import { useEffect, useState } from "react";
-import CreateEditNote from "@/components/create-edit-note";
 import axiosInstance from "@/lib/axios-instance";
 import { TNote } from "@/lib/type";
 import { Card } from "@/components/ui/card";
+import NoteFrom from "@/components/note-form";
 const data = {
   title: "Note App",
   date: "6th April 2024",
@@ -37,7 +37,7 @@ function Dashboard() {
       isOpen: false,
     }));
   };
- 
+
   const getAllNotes = async () => {
     try {
       const response = await axiosInstance.get("/notes");
@@ -51,16 +51,16 @@ function Dashboard() {
       console.log("====================================");
     }
   };
-  
+
   useEffect(() => {
-    getAllNotes()
-  },[])
+    getAllNotes();
+  }, []);
 
   return (
     <section className=" flex-1">
       <div className="container grid grid-cols-1 gap-4 md:grid-cols-3 py-4 ">
         {notes.length > 0 ? (
-          notes.map((data, index) => <NoteCard key={index} data={data} />)
+          notes.map((data, index) => <NoteCard key={index} data={data} getAllNotes={getAllNotes} />)
         ) : (
           <Card className="col-span-3 text-center p-4">No Notes Availble</Card>
         )}
@@ -87,7 +87,7 @@ function Dashboard() {
         contentLabel=""
         className="relative w-1/4 bg-white rounded-md max-auto mt-14 flex items-center justify-center p-4 container"
       >
-        <CreateEditNote onClose={onClose} getAllNotes={getAllNotes}/>
+        <NoteFrom onClose={onClose} getAllNotes={getAllNotes} />
       </Modal>
     </section>
   );
