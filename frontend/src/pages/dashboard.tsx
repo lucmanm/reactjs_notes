@@ -37,7 +37,7 @@ function Dashboard() {
       isOpen: false,
     }));
   };
-
+ 
   const getAllNotes = async () => {
     try {
       const response = await axiosInstance.get("/notes");
@@ -87,7 +87,7 @@ function Dashboard() {
         contentLabel=""
         className="relative w-1/4 bg-white rounded-md max-auto mt-14 flex items-center justify-center p-4 container"
       >
-        <CreateEditNote onClose={onClose} />
+        <CreateEditNote onClose={onClose} getAllNotes={getAllNotes}/>
       </Modal>
     </section>
   );
