@@ -7,7 +7,7 @@ import InputTag from "./inpu-tag";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { noteSchema } from "@/lib/type";
+import { noteSchema, TNote, TSaveType } from "@/lib/type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axiosInstance from "@/lib/axios-instance";
 
@@ -21,9 +21,11 @@ const noteFormSchem = noteSchema.pick({
 type TCreateEditNote = {
   onClose: () => void;
   getAllNotes: () => void;
+  initialData: TNote | null;
+  type: TSaveType;
 };
 
-const NoteFrom: React.FC<TCreateEditNote> = ({ onClose, getAllNotes }) => {
+const NoteFrom: React.FC<TCreateEditNote> = ({ type, initialData, onClose, getAllNotes }) => {
   const [tags, setTags] = useState([""]);
 
   const {
@@ -32,7 +34,7 @@ const NoteFrom: React.FC<TCreateEditNote> = ({ onClose, getAllNotes }) => {
     formState: { errors },
   } = useForm<z.infer<typeof noteFormSchem>>({
     resolver: zodResolver(noteFormSchem),
-    defaultValues: {
+    defaultValues: initialData || {
       title: "",
       content: "",
       tags: [],
@@ -40,24 +42,46 @@ const NoteFrom: React.FC<TCreateEditNote> = ({ onClose, getAllNotes }) => {
     },
   });
   const onSubmit = async (data: z.infer<typeof noteFormSchem>) => {
-    try {
-      const { title, content, tags, isPinned } = data;
+    if (initialData && type === "Save") {
+      try {
+        const { title, content, tags, isPinned } = data;
 
-      const response = await axiosInstance.post("/create-note", {
-        title,
-        content,
-        tags,
-        isPinned,
-      });
+        const response = await axiosInstance.post("/create-note", {
+          title,
+          content,
+          tags,
+          isPinned,
+        });
 
-      if (response.data && response.data.note) {
-        getAllNotes();
-        onClose();
+        if (response.data && response.data.note) {
+          getAllNotes();
+          onClose();
+        }
+      } catch (error) {
+        console.log("====================================");
+        console.log("ERROR_CREATE_NOTE", error);
+        console.log("====================================");
       }
-    } catch (error) {
-      console.log("====================================");
-      console.log("ERROR_CREATE_NOTE", error);
-      console.log("====================================");
+    } else if (initialData && type === "Save Changes") {
+      try {
+        const { title, content, tags, isPinned } = data;
+
+        const response = await axiosInstance.put(`/edit-note/${initialData._id}`, {
+          title,
+          content,
+          tags,
+          isPinned,
+        });
+
+        if (response.data && response.data.note) {
+          getAllNotes();
+          onClose();
+        }
+      } catch (error) {
+        console.log("====================================");
+        console.log("ERROR_CREATE_NOTE", error);
+        console.log("====================================");
+      }
     }
   };
 
@@ -88,7 +112,7 @@ const NoteFrom: React.FC<TCreateEditNote> = ({ onClose, getAllNotes }) => {
         hover:text-slate-600"
           >
             <Save className="mr-2 h-4 w-4 " />
-            Save
+            {type}
           </Button>
         </div>
       </form>

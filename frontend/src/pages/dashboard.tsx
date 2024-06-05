@@ -4,33 +4,25 @@ import { Plus } from "lucide-react";
 import Modal from "react-modal";
 import { useEffect, useState } from "react";
 import axiosInstance from "@/lib/axios-instance";
-import { TNote } from "@/lib/type";
+import { TNote, TNoteModal } from "@/lib/type";
 import { Card } from "@/components/ui/card";
 import NoteFrom from "@/components/note-form";
-import { string } from "zod";
-const data = {
-  title: "Note App",
-  date: "6th April 2024",
-  content:
-    "LorLorem ipsum dolor sit amet consectetur adipisicing elit. Dignissimos perferendis eveniet magnam reiciendis, commodi nostrum ut optio laboriosam ducimus. Quasi quo cupiditate itaque asperiores. Pariatur omnis placeat deserunt facilis quos.em",
-  tags: "#Web #note",
 
-  isPinned: false,
-};
 function Dashboard() {
   const [notes, setNotes] = useState<TNote[]>([]);
-  const [onMondal, setOnMondal] = useState({
+
+  const [onMondal, setOnMondal] = useState<TNoteModal>({
     isOpen: false,
-    type: "create",
+    type: "",
     data: null,
   });
 
-  const onOpen = () => {
-    setOnMondal((prev) => ({
-      ...prev,
-      isOpen: true,
-    }));
-  };
+  // const onOpen = () => {
+  //   setOnMondal((prev) => ({
+  //     ...prev,
+  //     isOpen: true,
+  //   }));
+  // };
 
   const onClose = () => {
     setOnMondal((prev) => ({
@@ -53,8 +45,12 @@ function Dashboard() {
     }
   };
 
-  const handlEdit = async (id: string) => {
-    onOpen();
+  const handlEdit = async (data: TNote) => {
+    setOnMondal({
+      isOpen: true,
+      type: "Save Changes",
+      data: data,
+    });
   };
 
   useEffect(() => {
@@ -70,7 +66,7 @@ function Dashboard() {
               key={index}
               data={data}
               getAllNotes={getAllNotes}
-              onEdit={() => handlEdit(data._id)}
+              onEdit={() => handlEdit(data)}
             />
           ))
         ) : (
@@ -81,13 +77,13 @@ function Dashboard() {
       <Button
         variant="ghost"
         className="fixed bg-teal-800 hover:bg-teal-300  border-teal-500 rounded-full p-0 shadow-lg w-12 h-12 flex items-center justify-center bottom-10 right-10"
-        onClick={onOpen}
+        onClick={() => setOnMondal((prev) => ({ ...prev, type: "Save", isOpen: true }))}
       >
         <Plus className="size-6" />
       </Button>
       <Modal
         isOpen={onMondal.isOpen}
-        onRequestClose={onClose}
+        onRequestClose={() => setOnMondal((prev) => ({ ...prev, type: "Save", isOpen: false }))}
         style={{
           overlay: {
             backgroundColor: "rgba(0,0,0,0.2)",
@@ -96,7 +92,12 @@ function Dashboard() {
         contentLabel=""
         className="relative w-1/4 bg-white rounded-md max-auto mt-14 flex items-center justify-center p-4 container"
       >
-        <NoteFrom onClose={onClose} getAllNotes={getAllNotes} />
+        <NoteFrom
+          initialData={onMondal.data}
+          type={onMondal.type}
+          onClose={onClose}
+          getAllNotes={getAllNotes}
+        />
       </Modal>
     </section>
   );

@@ -18,7 +18,7 @@ import { useNavigate } from "react-router-dom";
 type TNoteProps = {
   data: TNote;
   getAllNotes: () => void;
-  onEdit: () => void;
+  onEdit: (id:string) => void;
 };
 
 export default function NoteCard({ data, getAllNotes, onEdit }: TNoteProps) {
@@ -57,7 +57,7 @@ export default function NoteCard({ data, getAllNotes, onEdit }: TNoteProps) {
           </div>
           <div className="flex gap-4 *:h-4 *:w-4 ">
             <Trash className="hover:text-teal-500" onClick={() => onDelete(data._id)} />
-            <Edit className="hover:text-teal-500" onClick={() => onEdit()} />
+            <Edit className="hover:text-teal-500" onClick={() => onEdit(data._id)} />
           </div>
         </div>
       </CardContent>

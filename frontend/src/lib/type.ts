@@ -27,5 +27,13 @@ export const noteSchema = z.object({
     createdAt: z.string(),
     isPinned: z.boolean()
 })
+const saveTypeSchema = z.enum(["Save", "Save Changes",""])
 
 export type TNote = z.infer<typeof noteSchema>
+export type TSaveType = z.infer<typeof saveTypeSchema>
+
+export type TNoteModal = {
+    isOpen: boolean,
+    type: TSaveType,
+    data: TNote | null
+}
