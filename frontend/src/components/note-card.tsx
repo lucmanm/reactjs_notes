@@ -4,24 +4,27 @@ import { TNote } from "@/lib/type";
 import moment from "moment";
 import axiosInstance from "@/lib/axios-instance";
 import { useNavigate } from "react-router-dom";
-// type TNoteCard = {
-//   title: string;
-//   date: string;
-//   content: string;
-//   tags: string;
-//   isPinned: boolean;
-//   onEdit?: () => void;
-//   onDelete?: () => void;
-//   onPinNote?: () => void;
-// };
 
 type TNoteProps = {
   data: TNote;
   getAllNotes: () => void;
-  onEdit: (id:string) => void;
+  onEdit: (data: TNote) => void;
+  setAlert: (
+    value: React.SetStateAction<{
+      alertOn: boolean;
+      title: string | null;
+      describe: string | null;
+      onConfirm?: () => void;
+    }>
+  ) => void;
 };
 
-export default function NoteCard({ data, getAllNotes, onEdit }: TNoteProps) {
+export default function NoteCard({
+  data,
+  getAllNotes,
+  onEdit,
+  setAlert,
+}: TNoteProps) {
   const navigate = useNavigate();
   const onDelete = async (id: string) => {
     try {
@@ -37,6 +40,15 @@ export default function NoteCard({ data, getAllNotes, onEdit }: TNoteProps) {
     }
   };
 
+  const handleDeleteClick = () => {
+    setAlert({
+      title: "Delete",
+      describe: "Are you sure you want to delete this note?",
+      alertOn: true,
+      onConfirm: () => onDelete(data.id), // Pass the deletion function as a callback
+    });
+  };
+
   return (
     <Card className="hover:shadow-md hover:cursor-pointer lg:pr-2 ">
       <CardContent className="relative top-3">
@@ -50,14 +62,23 @@ export default function NoteCard({ data, getAllNotes, onEdit }: TNoteProps) {
         <div className="flex items-center justify-between py-1">
           <div className="flex space-x-1">
             {data.tags.map((item, idx) => (
-              <span key={idx} className="text-xs text-green-500 bg-slate-200 p-1 rounded-sm">
+              <span
+                key={idx}
+                className="text-xs text-green-500 bg-slate-200 p-1 rounded-sm"
+              >
                 {item}
               </span>
             ))}
           </div>
           <div className="flex gap-4 *:h-4 *:w-4 ">
-            <Trash className="hover:text-teal-500" onClick={() => onDelete(data._id)} />
-            <Edit className="hover:text-teal-500" onClick={() => onEdit(data._id)} />
+            <Trash
+              className="hover:text-teal-500"
+              onClick={handleDeleteClick}
+            />
+            <Edit
+              className="hover:text-teal-500"
+              onClick={() => onEdit(data)}
+            />
           </div>
         </div>
       </CardContent>

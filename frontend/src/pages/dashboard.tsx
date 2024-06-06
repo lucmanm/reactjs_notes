@@ -7,9 +7,16 @@ import axiosInstance from "@/lib/axios-instance";
 import { TNote, TNoteModal } from "@/lib/type";
 import { Card } from "@/components/ui/card";
 import NoteFrom from "@/components/note-form";
+import AlertModal from "@/components/alert-modal";
 
 function Dashboard() {
   const [notes, setNotes] = useState<TNote[]>([]);
+  
+  const [alert, setAlert] = useState({
+    alertOn: false,
+    title: "",
+    describe: "",
+  });
 
   const [onMondal, setOnMondal] = useState<TNoteModal>({
     isOpen: false,
@@ -17,17 +24,17 @@ function Dashboard() {
     data: null,
   });
 
-  // const onOpen = () => {
-  //   setOnMondal((prev) => ({
-  //     ...prev,
-  //     isOpen: true,
-  //   }));
-  // };
-
   const onClose = () => {
     setOnMondal((prev) => ({
       ...prev,
       isOpen: false,
+    }));
+  };
+
+  const onCloseAlert = () => {
+    setAlert((prev) => ({
+      ...prev,
+      alertOn: false,
     }));
   };
 
@@ -59,6 +66,19 @@ function Dashboard() {
 
   return (
     <section className=" flex-1">
+      <AlertModal
+        onRequestClose={onCloseAlert}
+        isOpen={alert.alertOn}
+        title={alert.title}
+        describe={alert.describe}
+      >
+        <div className="space-x-4">
+          <Button variant="default">Yes</Button>
+          <Button variant="destructive" onClick={onCloseAlert}>
+            No
+          </Button>
+        </div>
+      </AlertModal>
       <div className="container grid grid-cols-1 gap-4 md:grid-cols-3 py-4 ">
         {notes.length > 0 ? (
           notes.map((data, index) => (
@@ -67,6 +87,7 @@ function Dashboard() {
               data={data}
               getAllNotes={getAllNotes}
               onEdit={() => handlEdit(data)}
+              setAlert={() => setAlert((prev) => ({ ...prev, alertOn: true }))}
             />
           ))
         ) : (
@@ -77,20 +98,24 @@ function Dashboard() {
       <Button
         variant="ghost"
         className="fixed bg-teal-800 hover:bg-teal-300  border-teal-500 rounded-full p-0 shadow-lg w-12 h-12 flex items-center justify-center bottom-10 right-10"
-        onClick={() => setOnMondal((prev) => ({ ...prev, type: "Save", isOpen: true }))}
+        onClick={() =>
+          setOnMondal((prev) => ({ ...prev, type: "Save", isOpen: true }))
+        }
       >
         <Plus className="size-6" />
       </Button>
       <Modal
         isOpen={onMondal.isOpen}
-        onRequestClose={() => setOnMondal((prev) => ({ ...prev, type: "Save", isOpen: false }))}
+        onRequestClose={() =>
+          setOnMondal((prev) => ({ ...prev, type: "Save", isOpen: false }))
+        }
         style={{
           overlay: {
             backgroundColor: "rgba(0,0,0,0.2)",
           },
         }}
         contentLabel=""
-        className="relative w-1/4 bg-white rounded-md max-auto mt-14 flex items-center justify-center p-4 container"
+        className="relative w-full bg-white rounded-md max-auto mt-14 flex items-center justify-center p-4 container lg:w-1/4"
       >
         <NoteFrom
           initialData={onMondal.data}
