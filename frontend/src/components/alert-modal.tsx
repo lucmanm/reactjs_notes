@@ -1,18 +1,32 @@
 import Modal from "react-modal";
-type TAlertModalProps = {
+import { Button } from "./ui/button";
+export type TAlertModalProps = {
   title: string;
-  describe: string;
+  description: string;
   isOpen: boolean;
-  children: React.ReactNode;
   onRequestClose?: () => void;
+  onConfirm?: () => Promise<void>;
+  onClose?: () => void;
+  isloading?: boolean;
 };
+
 export default function AlertModal({
-  children,
-  describe,
+  description,
   isOpen,
   title,
   onRequestClose,
+  onClose,
+  onConfirm,
+  isloading
 }: TAlertModalProps) {
+  // const [isMounted, setIsMounted] = useState(false);
+
+  // useEffect(() => {
+  //   setIsMounted(true);
+  // }, []);
+
+  // if (isMounted) return null;
+
   return (
     <Modal
       isOpen={isOpen}
@@ -20,8 +34,15 @@ export default function AlertModal({
       onRequestClose={onRequestClose}
     >
       <div className="text-xl font-bold">{title}</div>
-      <div>{describe}</div>
-      {children}
+      <div>{description}</div>
+      <div className="space-x-4">
+        <Button disabled={isloading} variant="default" onClick={onConfirm}>
+          Yes
+        </Button>
+        <Button variant="destructive" onClick={onClose}>
+          No
+        </Button>
+      </div>
     </Modal>
   );
 }

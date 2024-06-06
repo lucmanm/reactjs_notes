@@ -7,17 +7,9 @@ import axiosInstance from "@/lib/axios-instance";
 import { TNote, TNoteModal } from "@/lib/type";
 import { Card } from "@/components/ui/card";
 import NoteFrom from "@/components/note-form";
-import AlertModal from "@/components/alert-modal";
 
 function Dashboard() {
   const [notes, setNotes] = useState<TNote[]>([]);
-  
-  const [alert, setAlert] = useState({
-    alertOn: false,
-    title: "",
-    describe: "",
-  });
-
   const [onMondal, setOnMondal] = useState<TNoteModal>({
     isOpen: false,
     type: "",
@@ -28,13 +20,6 @@ function Dashboard() {
     setOnMondal((prev) => ({
       ...prev,
       isOpen: false,
-    }));
-  };
-
-  const onCloseAlert = () => {
-    setAlert((prev) => ({
-      ...prev,
-      alertOn: false,
     }));
   };
 
@@ -66,19 +51,6 @@ function Dashboard() {
 
   return (
     <section className=" flex-1">
-      <AlertModal
-        onRequestClose={onCloseAlert}
-        isOpen={alert.alertOn}
-        title={alert.title}
-        describe={alert.describe}
-      >
-        <div className="space-x-4">
-          <Button variant="default">Yes</Button>
-          <Button variant="destructive" onClick={onCloseAlert}>
-            No
-          </Button>
-        </div>
-      </AlertModal>
       <div className="container grid grid-cols-1 gap-4 md:grid-cols-3 py-4 ">
         {notes.length > 0 ? (
           notes.map((data, index) => (
@@ -87,7 +59,6 @@ function Dashboard() {
               data={data}
               getAllNotes={getAllNotes}
               onEdit={() => handlEdit(data)}
-              setAlert={() => setAlert((prev) => ({ ...prev, alertOn: true }))}
             />
           ))
         ) : (

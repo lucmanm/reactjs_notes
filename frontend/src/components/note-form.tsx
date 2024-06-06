@@ -25,7 +25,12 @@ type TCreateEditNote = {
   type: TSaveType;
 };
 
-const NoteFrom: React.FC<TCreateEditNote> = ({ type, initialData, onClose, getAllNotes }) => {
+const NoteFrom: React.FC<TCreateEditNote> = ({
+  type,
+  initialData,
+  onClose,
+  getAllNotes,
+}) => {
   const [tags, setTags] = useState([""]);
 
   const {
@@ -42,6 +47,7 @@ const NoteFrom: React.FC<TCreateEditNote> = ({ type, initialData, onClose, getAl
     },
   });
   const onSubmit = async (data: z.infer<typeof noteFormSchem>) => {
+    
     if (initialData && type === "Save") {
       try {
         const { title, content, tags, isPinned } = data;
@@ -66,12 +72,15 @@ const NoteFrom: React.FC<TCreateEditNote> = ({ type, initialData, onClose, getAl
       try {
         const { title, content, tags, isPinned } = data;
 
-        const response = await axiosInstance.put(`/edit-note/${initialData._id}`, {
-          title,
-          content,
-          tags,
-          isPinned,
-        });
+        const response = await axiosInstance.put(
+          `/edit-note/${initialData._id}`,
+          {
+            title,
+            content,
+            tags,
+            isPinned,
+          }
+        );
 
         if (response.data && response.data.note) {
           getAllNotes();
@@ -94,16 +103,31 @@ const NoteFrom: React.FC<TCreateEditNote> = ({ type, initialData, onClose, getAl
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid w-full max-w-sm items-center gap-1.5">
           <Label htmlFor="title">Title</Label>
-          <Input {...register("title")} type="title" id="title" placeholder="title" />
-          <span className="text-sm text-red-500">{errors && errors.title?.message}</span>
+          <Input
+            {...register("title")}
+            type="title"
+            id="title"
+            placeholder="title"
+          />
+          <span className="text-sm text-red-500">
+            {errors && errors.title?.message}
+          </span>
         </div>
         <div className="grid w-full gap-1.5">
           <Label htmlFor="content">Your Content</Label>
-          <Textarea placeholder="Type your note here." id="content" {...register("content")} />
-          <span className="text-sm text-red-500">{errors && errors.content?.message}</span>
+          <Textarea
+            placeholder="Type your note here."
+            id="content"
+            {...register("content")}
+          />
+          <span className="text-sm text-red-500">
+            {errors && errors.content?.message}
+          </span>
         </div>
         <InputTag tags={tags} setTags={setTags} />
-        <span className="text-sm text-red-500">{errors && errors.tags?.message}</span>
+        <span className="text-sm text-red-500">
+          {errors && errors.tags?.message}
+        </span>
         <div className="grid w-full gap-1.5  ">
           <Button
             type="submit"
